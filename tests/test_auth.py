@@ -4,7 +4,7 @@ from tests.conftest import client
 
 
 def test_register():
-    client.post("/auth/register", json={
+    client.post("/user/register", json={
         "username": "string",
         "email": "string",
         "phone_number": "string",

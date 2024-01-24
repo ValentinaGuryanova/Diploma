@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select, insert
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import APIRouter, Depends
 
 from fastapi_sqlalchemy import db
-from src.database import get_async_session
+
+from src.user.utils import auth
 from src.products.models import Product
 from src.products.schemas import ProductCreate
 
@@ -14,39 +13,23 @@ router = APIRouter(
 
 
 @router.get("/")
-async def get_products():
-    #try:
-    data = await db.session.query(Product).all()
+async def get_products(_=Depends(auth)):
+    data = db.session.query(Product).all()
     return {
             "status": "success",
             "data": data,
             "details": None
         }
-    # except Exception:
-    #     raise HTTPException(status_code=500, detail={
-    #         "status": "error",
-    #         "data": None,
-    #         "details": None
-    #     })
 
 
 @router.post("/")
-async def add_products(new_product: ProductCreate):
-    session.add(Product(**new_product.model_dump()))
-
-    # stmt = insert(product).values(**new_product.dict())
-    # await session.execute(stmt)
-    await session.commit()
+async def add_products(new_product: ProductCreate, _=Depends(auth)):
+    db.session.add(Product(**new_product.model_dump()))
     return {"status": "success"}
 
 
-# @router.get("/")
-# async def get_all_products(limit: int = 1, offset: int = 0):
-#     return ProductCreate[offset:][:limit]
-
-
 @router.put("/update/{product_id}")
-async def update_product(product_id: int, new_name: str, new_price: int):
+async def update_product(product_id: int, new_name: str, new_price: int, _=Depends(auth)):
     current_product = list(filter(lambda product: product.get("id") == product_id, ProductCreate))[0]
     current_product["name"] = new_name
     current_product["price"] = new_price
@@ -54,8 +37,6 @@ async def update_product(product_id: int, new_name: str, new_price: int):
 
 
 @router.delete("/delete/{product_id}")
-async def delete_product(product_id: int):
-    pass
-@router.delete('/{pk}', status_code=204)
-async def delete_category(pk: int):
-    return await service.category_s.delete(id=pk)
+async def delete_product(product_id: int, _=Depends(auth)):
+    db.session.query(Product).delete(product_id)
+    return {"status": "success"}

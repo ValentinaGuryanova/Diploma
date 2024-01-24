@@ -6,9 +6,8 @@ from pydantic import BaseModel
 class ProductCreate(BaseModel):
     """ Модель товара """
 
-    id: int
     name: str
     price: int
-    created_at: datetime
-    updated_at: datetime
+    create_at: datetime
+    update_at: datetime
     is_active: bool

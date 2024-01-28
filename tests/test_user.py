@@ -8,8 +8,7 @@ def test_register():
         "username": "string",
         "email": "string",
         "phone_number": "string",
-        "hashed_password": "string",
-        "password2": "string",
+        "password": "string",
         "is_active": "bool",
         "is_superuser": "bool",
         "is_verified": "bool"

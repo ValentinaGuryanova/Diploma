@@ -1,10 +1,13 @@
-from fastapi import HTTPException, FastAPI
+from fastapi import HTTPException, FastAPI, Depends
 from fastapi_sqlalchemy import db
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 from passlib.context import CryptContext
-from src.user.models import User, Token
+from src.user.models import User
+from src.user import schemas
+from src.user.schemas import UserInDB, Token
 
 app = FastAPI(
     title="Product Shop"
@@ -14,17 +17,18 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 async def get_user_db():
-    yield SQLAlchemyUserDatabase(db.session, User)
+    yield SQLAlchemyUserDatabase(db.session, UserInDB)
 
 
-async def register(db: Session, user_data: User):
-    if User.email == user_data:
-        raise HTTPException(status_code=400, detail="Пользователь с таким email уже существует!")
-    user = User(email=user_data.email)
-    user.hashed_password = pwd_context.hash(user_data.password)
+async def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+async def create_user(db: Session, user: User):
+    pwd_context.hash(user.password)
     db.add(user)
     db.commit()
-    return {"email": user.email}
+    return user
 
 
 async def auth(request: Request):
@@ -32,7 +36,7 @@ async def auth(request: Request):
     token = request.headers.get("token")
     if not token:
         raise HTTPException(status_code=403, detail="Токен не передан")
-    user = user.get_by_email(db.session(Token).filter(token=token).one())
+    #user = user.get_by_email(db.session(Token).filter(token=token).one())
     print(user)
     if user:
         yield user

@@ -6,6 +6,8 @@ from src.database import Base
 
 
 class Product(Base):
+    """ Модель товаров """
+
     __tablename__ = "product"
     id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String, nullable=False)

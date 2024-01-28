@@ -1,20 +1,14 @@
 import datetime
 
 import jwt
-# from jose import JWTError, jwt
-# from passlib.context import CryptContext
-# from datetime import datetime, timedelta
 
 from fastapi import HTTPException, FastAPI, Depends
 from fastapi_sqlalchemy import db
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 from starlette.requests import Request
 from passlib.context import CryptContext
 from src.user.models import User
-from src.user import schemas
-from src.user.schemas import UserInDB, Token
 
 app = FastAPI(
     title="Product Shop"
@@ -28,8 +22,8 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-def get_user_db():
-    yield SQLAlchemyUserDatabase(db.session, UserInDB)
+# def get_user_db():
+#     yield SQLAlchemyUserDatabase(db.session, UserInDB)
 
 
 def get_password_hash(password):
@@ -61,10 +55,10 @@ def auth(request: Request):
         raise HTTPException(status_code=403, detail="Пользователь не авторизован")
 
 
-def create_access_token(data: Session, expires_delta: datetime.timedelta = None):
+def create_access_token(db: Session, expires_delta: datetime.timedelta = None):
     """ Функция для создания JWT-токена """
 
-    to_encode = data.copy()
+    to_encode = db.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:

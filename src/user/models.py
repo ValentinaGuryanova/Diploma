@@ -5,15 +5,6 @@ from src.database import Base
 from src.user.services import check_phone, check_password
 
 
-class Token(Base):
-
-    __tablename__ = "token"
-    id = Column(Integer, primary_key=True)
-    access_token = Column(String, nullable=False)
-    # user_id = Column(Integer, ForeignKey("user_id"))
-    # user = relationship("User", back_populates="tokens")
-
-
 class User(Base):
     """ Модель пользователя """
 
@@ -28,5 +19,14 @@ class User(Base):
     is_verified = Column(Boolean, default=False, nullable=False)
     access_token = relationship("Token", back_populates="user")
 
-#    check_phone()
-#    check_password()
+    # check_phone()
+    # check_password()
+
+
+class Token(Base):
+
+    __tablename__ = "token"
+    id = Column(Integer, primary_key=True)
+    access_token = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User", back_populates="access_token")

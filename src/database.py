@@ -14,7 +14,7 @@ Base: DeclarativeMeta = declarative_base()
 
 engine = create_engine(DATABASE_URL)
 #async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async_session = sessionmaker(

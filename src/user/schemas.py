@@ -12,7 +12,7 @@ class TokenData(BaseModel):
 class UserBase(BaseModel):
 
     username: str
-    email: EmailStr
+    email: str
     phone_number: str
 
 

@@ -27,4 +27,4 @@ async def startup():
     from src.user.models import User, Token   # noqa
     #async with engine.begin() as conn:
     Base.metadata.drop_all(engine)   # delete
-    Base.metadata.create_all(engine)
+    Base.metadata.create_all(bind=engine)

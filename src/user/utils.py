@@ -1,4 +1,6 @@
+import datetime
 
+import jwt
 # from jose import JWTError, jwt
 # from passlib.context import CryptContext
 # from datetime import datetime, timedelta
@@ -43,7 +45,7 @@ def create_user(db: Session, user: User):
         return user
     except Exception as e:
         db.rollback()
-        raise e
+        raise HTTPException(status_code=400, detail="Ошибка при создании пользователя")
 
 
 def auth(request: Request):
@@ -59,14 +61,14 @@ def auth(request: Request):
         raise HTTPException(status_code=403, detail="Пользователь не авторизован")
 
 
-# def create_access_token(data: Session, expires_delta: timedelta = None):
-#     """ Функция для создания JWT-токена """
-#
-#     to_encode = data.copy()
-#     if expires_delta:
-#         expire = datetime.utcnow() + expires_delta
-#     else:
-#         expire = datetime.utcnow() + timedelta(minutes=15)
-#     to_encode.update({"exp": expire})
-#     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-#     return encoded_jwt
+def create_access_token(data: Session, expires_delta: datetime.timedelta = None):
+    """ Функция для создания JWT-токена """
+
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + datetime.timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt

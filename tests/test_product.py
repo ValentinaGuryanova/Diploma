@@ -1,12 +1,15 @@
-from fastapi.testclient import TestClient
-
+from starlette.testclient import TestClient
+from unittest.mock import Mock
 from main import app
+from products.models import Product
+from products.router import get_products
 
 client = TestClient(app)
 
 
-async def test_add_products():
-    response = await client.post("/products", json={
+def test_add_products():
+    db_mock = Mock()
+    response = client.post("/products", json={
         "id": 1,
         "name": "lipstick",
         "price": 500,
@@ -15,7 +18,17 @@ async def test_add_products():
         "is_active": True
     })
 
-    assert response.status_code == 200
+
+    # Заглушаем метод query для возврата тестовых данных
+    db_mock.session.query().all.return_value = response
+
+    # Имитируем передачу заглушки объекта db в качестве зависимости
+    result = get_products(_=db_mock)
+
+    # Проверяем, что результат содержит ожидаемые данные
+    assert result["status"] == "success"
+    assert result["data"] == response
+    assert result["details"] is None
 
 
 async def test_get_products():

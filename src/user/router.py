@@ -1,9 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi_sqlalchemy import db
 from sqlalchemy.orm import Session
 
 from src.user.models import User
-from src.user.utils import pwd_context, get_user_db, create_user
+from src.user.utils import pwd_context, get_user_db, create_user, get_current_user
 from src.user import schemas
 from src.user.schemas import User, UserInDB
 
@@ -31,3 +33,7 @@ async def register(db: Session, user: User):
     create_user(user)
     return {"message": "Пользователь успешно зарегистрирован."}
 
+
+@router.get("/users/login")
+async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user

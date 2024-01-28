@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import HTTPException, FastAPI, Depends
 from fastapi_sqlalchemy import db
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
@@ -8,6 +10,7 @@ from passlib.context import CryptContext
 from src.user.models import User
 from src.user import schemas
 from src.user.schemas import UserInDB, Token
+from fastapi.security import OAuth2PasswordBearer
 
 app = FastAPI(
     title="Product Shop"
@@ -42,3 +45,14 @@ async def auth(request: Request):
         yield user
     else:
         raise HTTPException(status_code=403, detail="Пользователь не авторизован")
+
+
+def fake_decode_token(token):
+    return User(
+        username=token + "fakedecoded", email="john@example.com", full_name="John Doe"
+    )
+
+
+async def get_current_user(token: Annotated[str, Depends()]):
+    user = fake_decode_token(token)
+    return user

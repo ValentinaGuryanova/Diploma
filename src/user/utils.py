@@ -22,10 +22,6 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-# def get_user_db():
-#     yield SQLAlchemyUserDatabase(db.session, UserInDB)
-
-
 def get_password_hash(password):
     return pwd_context.hash(password)
 

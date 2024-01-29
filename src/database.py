@@ -31,4 +31,4 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 def get_user_db():
-    yield SQLAlchemyUserDatabase(db.session, User)
+     yield SQLAlchemyUserDatabase(db.session, User)

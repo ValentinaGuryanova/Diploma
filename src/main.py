@@ -7,7 +7,7 @@ from src.user.router import router as router_user
 from src.user.router import router as router_token
 
 app = FastAPI(
-    title="Product Shop"
+    title="Cosmetics Shop"
 )
 
 app.add_middleware(
@@ -26,5 +26,5 @@ async def startup():
     from src.products.models import Product  # noqa
     from src.user.models import User, Token   # noqa
     #async with engine.begin() as conn:
-    Base.metadata.drop_all(engine)   # delete
+    Base.metadata.drop_all(bind=engine)   # delete
     Base.metadata.create_all(bind=engine)

@@ -30,15 +30,15 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def create_user(db: Session, user: User):
+def create_user(user: User):
     user.password = pwd_context.hash(user.password)
-    db.add(user)
+    db.session.add(user)
     try:
-        db.commit()
-        db.refresh(user)
+        db.session.commit()
+        db.session.refresh(user)
         return user
     except Exception as e:
-        db.rollback()
+        db.session.rollback()
         raise HTTPException(status_code=400, detail="Ошибка при создании пользователя")
 
 

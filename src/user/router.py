@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi_sqlalchemy import db
 #from src.user.schemas import UserCreate, UserIn, UserOut, User
 from src.user.utils import create_user
-from src.user.models import User, UserCreate
+from src.user.models import User
 
 router = APIRouter(
     prefix="/users",
@@ -21,7 +21,7 @@ async def get_user():
 
 
 @router.post("/user/")
-async def register(user: UserCreate):
+async def register(user: User):
     db.session.query(User).all()
     if user.email in db:
         raise HTTPException(status_code=400, detail="Пользователь с таким email уже существует!")

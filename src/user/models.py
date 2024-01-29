@@ -20,14 +20,14 @@ class User(Base):
     access_token = relationship("Token", back_populates="user")
 
 
-class UserCreate(Base):
-    """ Модель создания пользователя """
-
-    __tablename__ = "user_create"
-    username = Column(String, nullable=False)
-    email = Column(String, unique=True, nullable=False)
-    phone_number = Column(String, nullable=False)
-    password = Column(String, nullable=False)
+# class UserCreate(Base):
+#     """ Модель создания пользователя """
+#
+#     __tablename__ = "user_create"
+#     username = Column(String, nullable=False)
+#     email = Column(String, unique=True, nullable=False)
+#     phone_number = Column(String, nullable=False)
+#     password = Column(String, nullable=False)
 
 
 class Token(Base):

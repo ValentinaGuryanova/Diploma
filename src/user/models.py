@@ -19,8 +19,15 @@ class User(Base):
     is_verified = Column(Boolean, default=False, nullable=False)
     access_token = relationship("Token", back_populates="user")
 
-    # check_phone()
-    # check_password()
+
+class UserCreate(Base):
+    """ Модель создания пользователя """
+
+    __tablename__ = "user_create"
+    username = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    phone_number = Column(String, nullable=False)
+    password = Column(String, nullable=False)
 
 
 class Token(Base):

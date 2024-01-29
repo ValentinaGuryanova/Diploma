@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from fastapi_sqlalchemy import db
-from src.user.schemas import UserCreate, UserIn, User, UserOut
-from src.user.utils import create_user, create_access_token
+#from src.user.schemas import UserCreate, UserIn, UserOut, User
+from src.user.utils import create_user
+from src.user.models import User, UserCreate
 
 router = APIRouter(
     prefix="/users",
@@ -11,7 +12,7 @@ router = APIRouter(
 
 @router.get("/")
 async def get_user():
-    data = db.session.query(UserCreate).all()
+    data = db.session.query(User).all()
     return {
         "status": "success",
         "data": data,
@@ -29,10 +30,10 @@ async def register(user: UserCreate):
 
 
 @router.post("/login/")
-async def login(user: UserIn):
+async def login(user: User):
     db.session.query(User).all()
     if user.email in db:
         stored_user = db[user.email]
         if user.password == stored_user["password"]:
-            return UserOut(username=stored_user["username"], email=stored_user.get("email"))
+            return User(username=stored_user["username"], email=stored_user.get("email"))
     raise HTTPException(status_code=401, detail="Неправильный email или password")

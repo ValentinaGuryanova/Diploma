@@ -53,16 +53,3 @@ def auth(request: Request):
         yield user
     else:
         raise HTTPException(status_code=403, detail="Пользователь не авторизован")
-
-
-def create_access_token(db: Session, expires_delta: datetime.timedelta = None):
-    """ Функция для создания JWT-токена """
-
-    to_encode = db.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + datetime.timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt

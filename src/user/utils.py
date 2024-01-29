@@ -16,11 +16,6 @@ app = FastAPI(
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Секретный ключ для подписи JWT
-SECRET_KEY = "v3.r.137756487.adf52d67576949fc227e9a44484f486d9ae8183c.c85c473c1a3d7451e8549432293d922bdcf27e12"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
 
 def get_password_hash(password):
     return pwd_context.hash(password)

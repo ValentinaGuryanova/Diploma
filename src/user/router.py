@@ -1,6 +1,8 @@
 
 from fastapi import APIRouter, HTTPException
 from fastapi_sqlalchemy import db
+from sqlalchemy.exc import IntegrityError
+
 from src.user.utils import create_user
 #from src.user.models import User
 from src.user.schemas import User, UserCreate
@@ -23,11 +25,13 @@ async def get_user():
 
 @router.post("/")
 async def register(user: UserCreate):
-    db.session.query(User).all()
-    if user.email in db:
+    try:
+        create_user(User(**user.model_dump()))
+        return {"message": "Пользователь успешно зарегистрирован."}
+    except IntegrityError as e:
         raise HTTPException(status_code=400, detail="Пользователь с таким email уже существует!")
-    create_user(user)
-    return {"message": "Пользователь успешно зарегистрирован."}
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Что-то пошло не так!")
 
 
 @router.post("/login/")

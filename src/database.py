@@ -8,7 +8,7 @@ from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from src.config import DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
-from src.user.schemas import User
+from src.user.schemas import UserAll
 
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 Base: DeclarativeMeta = declarative_base()
@@ -31,4 +31,4 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 def get_user_db():
-     yield SQLAlchemyUserDatabase(db.session, User)
+     yield SQLAlchemyUserDatabase(db.session, UserAll)

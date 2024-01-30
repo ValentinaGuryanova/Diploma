@@ -1,22 +1,15 @@
 import re
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, constr
-from pydantic.v1 import validator
+from pydantic import BaseModel, EmailStr, constr, ValidationError, validator
+#from pydantic.v1 import validator
 
 
 class UserBase(BaseModel):
 
     username: str
     email: EmailStr
-    #phone_number: constr(regex=r'^\+7\d{10}$')
-    phone_number: constr(min_length=12, max_length=12)
-
-    @validator('phone_number')
-    def phone_number_must_be_valid(cls, v):
-        if re.match(r'^\+7\d{10}$', v) is None:
-            raise ValueError("Неверно указан формат номера телефона")
-        return v
+    phone_number: constr(pattern=r'^\+7\d{10}$')
 
 
 class UserIn(BaseModel):
@@ -24,9 +17,11 @@ class UserIn(BaseModel):
     password: constr(min_length=8)
 
     @validator('password')
-    def phone_number_must_be_valid(cls, v):
-        if re.match(r'^(?=.*[A-Z])(?=.*[$%&!:.]).*$', v) is None:
-            raise ValueError("Пароль должен иметь не менее 8 символов, как минимум одна заглавная, строчная буква и цифра")
+    def password_validation(cls, v):
+        if not any(char.isupper() for char in v):
+            raise ValueError('Пароль должен содержать заглавную букву!')
+        if not any(char in '$%&!:.' for char in v):
+            raise ValueError('Пароль должен содержать один из специальных символов: $%&!:.')
         return v
 
 

@@ -35,12 +35,15 @@ async def add_products(new_product: ProductCreate):
 @router.put("/update/{product_id}")
 #async def update_product(product_id: int, new_name: str = None, new_price: int = None, _=Depends(auth)):
 async def update_product(product_id: int, new_name: str = None, new_price: int = None):
+    data = db.session.query(Product).filter(Product.id == product_id).first()
     try:
-        data = db.session.query(Product).filter(lambda product: product.get("id") == product_id, Product)
-        data["name"] = new_name
-        data["price"] = new_price
-        db.session.commit()
-        return {"message": "Продукт успешно изменен"}
+        if data:
+            if new_name:
+                data.name = new_name
+            if new_price is not None:
+                data.price = new_price
+            db.session.commit()
+            return {"message": "Продукт успешно изменен"}
     except Exception as e:
         raise HTTPException(status_code=404, detail="Что-то пошло не так!")
 
@@ -48,8 +51,12 @@ async def update_product(product_id: int, new_name: str = None, new_price: int =
 @router.delete("/delete/{product_id}")
 #async def delete_product(product_id: int, _=Depends(auth)):
 async def delete_product(product_id: int):
+    data = db.session.query(Product).filter(Product.id == product_id).first()
     try:
-        db.session.query(Product).delete(product_id)
+        if data:
+            db.session.delete(data)
+            db.session.commit()
+        db.session.commit()
         return {"message": "Продукт удален"}
     except Exception as e:
         raise HTTPException(status_code=404, detail="Что-то пошло не так!")

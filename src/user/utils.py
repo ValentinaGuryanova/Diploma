@@ -33,7 +33,7 @@ def auth(request: Request):
     token = request.headers.get("token")
     print(token)
     if not token:
-        raise HTTPException(status_code=403, detail="Токен не передан")
+        raise HTTPException(status_code=401, detail="Токен не передан")
     #user = user.get_by_email(db.session(Token).filter(token=token).one())
     print(user)
     if user:

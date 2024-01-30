@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, HTTPException
 from fastapi_sqlalchemy import db
 from sqlalchemy.exc import IntegrityError

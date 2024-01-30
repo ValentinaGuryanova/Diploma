@@ -1,11 +1,6 @@
-import datetime
-
-import jwt
-
-from fastapi import HTTPException, FastAPI, Depends
+from fastapi import HTTPException, FastAPI
 from fastapi_sqlalchemy import db
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy.orm import Session
 from starlette.requests import Request
 from passlib.context import CryptContext
 from src.user.models import User

@@ -1,8 +1,6 @@
-import re
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, constr, ValidationError, validator
-#from pydantic.v1 import validator
+from pydantic import BaseModel, EmailStr, constr, validator
 
 
 class UserBase(BaseModel):
@@ -32,7 +30,6 @@ class UserOut(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    #access_token: str = None
 
 
 class UserAll(UserBase):

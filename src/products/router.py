@@ -12,8 +12,7 @@ router = APIRouter(
 
 
 @router.get("/")
-#async def get_products(_=Depends(auth)):
-async def get_products():
+async def get_products(_=Depends(auth)):
     try:
         data = db.session.query(Product).all()
         return data
@@ -22,8 +21,7 @@ async def get_products():
 
 
 @router.post("/")
-#async def add_products(new_product: ProductCreate, _=Depends(auth)):
-async def add_products(new_product: ProductCreate):
+async def add_products(new_product: ProductCreate, _=Depends(auth)):
     try:
         db.session.add(Product(**new_product.model_dump()))
         db.session.commit()
@@ -33,8 +31,7 @@ async def add_products(new_product: ProductCreate):
 
 
 @router.put("/update/{product_id}")
-#async def update_product(product_id: int, new_name: str = None, new_price: int = None, _=Depends(auth)):
-async def update_product(product_id: int, new_name: str = None, new_price: int = None):
+async def update_product(product_id: int, new_name: str = None, new_price: int = None, _=Depends(auth)):
     data = db.session.query(Product).filter(Product.id == product_id).first()
     try:
         if data:
@@ -49,8 +46,7 @@ async def update_product(product_id: int, new_name: str = None, new_price: int =
 
 
 @router.delete("/delete/{product_id}")
-#async def delete_product(product_id: int, _=Depends(auth)):
-async def delete_product(product_id: int):
+async def delete_product(product_id: int, _=Depends(auth)):
     data = db.session.query(Product).filter(Product.id == product_id).first()
     try:
         if data:

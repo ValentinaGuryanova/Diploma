@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, constr, validator
+from pydantic import BaseModel, EmailStr, constr, model_validator
 
 
 class UserBase(BaseModel):
@@ -14,11 +14,12 @@ class UserIn(BaseModel):
     email: EmailStr
     password: constr(min_length=8)
 
-    @validator('password')
+    @model_validator(mode='before')
+    @classmethod
     def password_validation(cls, v):
-        if not any(char.isupper() for char in v):
+        if not any(char.isupper() for char in v['password']):
             raise ValueError('Пароль должен содержать заглавную букву!')
-        if not any(char in '$%&!:.' for char in v):
+        if not any(char in '$%&!:.' for char in v['password']):
             raise ValueError('Пароль должен содержать один из специальных символов: $%&!:.')
         return v
 
@@ -30,6 +31,15 @@ class UserOut(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+
+    @model_validator(mode='before')
+    @classmethod
+    def password_validation(cls, v):
+        if not any(char.isupper() for char in v['password']):
+            raise ValueError('Пароль должен содержать заглавную букву!')
+        if not any(char in '$%&!:.' for char in v['password']):
+            raise ValueError('Пароль должен содержать один из специальных символов: $%&!:.')
+        return v
 
 
 class UserAll(UserBase):

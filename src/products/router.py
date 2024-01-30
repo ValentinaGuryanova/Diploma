@@ -1,13 +1,9 @@
-from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException
-
 from fastapi_sqlalchemy import db
-from sqlalchemy.exc import IntegrityError
 
 from src.user.utils import auth
 from src.products.models import Product
-from src.products.schemas import ProductCreate, ProductBase
+from src.products.schemas import ProductCreate
 
 router = APIRouter(
     prefix="/products",
@@ -27,7 +23,7 @@ async def get_products():
 
 @router.post("/")
 #async def add_products(new_product: ProductCreate, _=Depends(auth)):
-async def create_product(new_product: ProductCreate):
+async def add_products(new_product: ProductCreate):
     try:
         db.session.add(Product(**new_product.model_dump()))
         db.session.commit()
@@ -36,10 +32,9 @@ async def create_product(new_product: ProductCreate):
         raise HTTPException(status_code=404, detail="Что-то пошло не так!")
 
 
-
 @router.put("/update/{product_id}")
+#async def update_product(product_id: int, new_name: str = None, new_price: int = None, _=Depends(auth)):
 async def update_product(product_id: int, new_name: str = None, new_price: int = None):
-#async def update_product(product_id: int, new_name: str, new_price: int, _=Depends(auth)):
     try:
         data = db.session.query(Product).filter(lambda product: product.get("id") == product_id, Product)
         data["name"] = new_name

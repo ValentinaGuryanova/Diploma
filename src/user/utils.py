@@ -36,6 +36,7 @@ def create_user(user: User):
 def auth(request: Request):
     user = SQLAlchemyUserDatabase(db.session, User)
     token = request.headers.get("token")
+    print(token)
     if not token:
         raise HTTPException(status_code=403, detail="Токен не передан")
     #user = user.get_by_email(db.session(Token).filter(token=token).one())
